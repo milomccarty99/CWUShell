@@ -1,0 +1,3 @@
+use exec($?) to get last exit code
+we can define an operating system
+using a buffer, we can run many commands at once
