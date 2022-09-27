@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h> // we must import this library to use boolean in c
+#include <stdlib.h>
 
 int foo (int bar) {
 	return bar*2;
@@ -8,7 +9,10 @@ typedef struct {
 	int x;
 	int y;
 } point;
-
+typedef struct {
+	char * name;
+	int age;
+} person;
 static void print_point(point p) {
 	printf("x: %d \n", p.x);
 	printf("y: %d \n", p.y);
@@ -55,4 +59,23 @@ int main() {
 	p.x = 15;
 	p.y = 10;
 	print_point(p);
+	person * myperson = (person *) malloc(sizeof(person));
+	myperson->name = "John";
+	myperson->age = 27;
+	printf("%s\n", myperson->name);
+	free(myperson);
+	//printf("%d\n", *myperson->name); //Attemping to access this memory after we free it will result in a core dump :(
+	//allocating the first 3 rows of pascal's triangle:
+	// 1
+	// 1 1
+	// 1 2 1
+	int r = 3;
+	int* arr[r];
+	for (int i = 0; i < r; i++)
+	{
+		//luckily pascal's triangal grows linearly at the rate of i
+		arr[i] = (int *) malloc(i * sizeof(int));
+	}
+
+
 }
