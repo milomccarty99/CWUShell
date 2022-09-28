@@ -1,3 +1,10 @@
 use exec($?) to get last exit code
-we can define an operating system
-using a buffer, we can run many commands at once
+we can define an operating system, but vaguely
+using a buffer, we can run many commands at once. though not for this 
+
+hardware interrupts mean we must save the state of the computer and handle the interrupt
+
+Todo:
+-finish cwushell arguments
+-start calculator monobehavior app
+
