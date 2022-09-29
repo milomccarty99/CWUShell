@@ -6,5 +6,8 @@ hardware interrupts mean we must save the state of the computer and handle the i
 
 Todo:
 -finish cwushell arguments
+	-why does the system call come before another statement?
+	
+
 -start calculator monobehavior app
 
