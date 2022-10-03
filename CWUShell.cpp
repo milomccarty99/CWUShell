@@ -3,10 +3,13 @@
 #include <stdlib.h>
 #include <cstdio>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <array>
 #include <memory>
 #include <stdexcept>
 #include <fstream>
+#include <filesystem>
+
 //#include <future>
 //#include <bits/stdc++.h>
 
@@ -83,7 +86,7 @@ string* split(string str, char del, string* result)
 void cwushell_startup()
 {
 	system("clear");
-	cout<<"This is a shell for CS470 Operating Systems class" <<endl;
+	cout<<"This is a shell for CS470 Operating Systems class written by Milo McCarty." <<endl;
 }
 
 // //eww
@@ -125,10 +128,14 @@ int change_prompt(string* data) {
 	else
 	{
 		cout<<"Too many prompts, prompt left unchanged.";
-		return 0; // unrecognized 
+		return 1; // unrecognized 
 
 	}
 }
+// returns a boolean array corresponding to the string of switches provided
+// example:
+// switches are -abc and -bc are active, get_switches will return {0,1,1,0}
+// note that the final entry in the array is for signaling improper switch usage
 bool* get_switches(string* data, string switches_full, bool* active_switches)
 {
 	int active_switches_size = switches_full.size() + 1;
@@ -179,21 +186,38 @@ int fileinfo_command_exec(bool* switches, string filename)
 	if(switches[3])
 	{
 		cout << "improper switch usage" << endl;
+		return 1;
 	}
 	if(switches[0])
 	{
-		string inode_querry = (" echo Inode Number:  `stat "+filename + " -c %i`");
-		(system(inode_querry.c_str()));
+		/*string inode_querry = (" echo Inode Number:  `stat "+filename + " -c %i`");
+		(system(inode_querry.c_str()));*/
+		int inode;
+		//fd = open(filename);
+		struct stat file_stat;
+		int ret;
+		ret = stat(filename.c_str(), &file_stat);
+
+		inode = file_stat.st_ino;
+		cout<< "Inode Number: "<< inode<< endl;
 	}
 	if(switches[1])
 	{
 		string filetype_querry = ("echo File type: `stat " + filename + " -c %F`");
 		system(filetype_querry.c_str());
+		//std::filesystem::status(filename).type();
+		//cout<<fs::status(filename).type();
 	}
 	if (switches[2])
 	{
-		string filemod_querry = ("echo Last modified: `stat " + filename + " -c %y`");
-		system(filemod_querry.c_str());
+		/*string filemod_querry = ("echo Last modified: `stat " + filename + " -c %y`");
+		system(filemod_querry.c_str());*/
+
+		//fd = open(filename);
+		struct stat file_stat;
+		int ret;
+		ret = stat(filename.c_str(), &file_stat);
+		cout<< "Last: "<< file_stat.st_mtime << endl;
 	}
 	return 0;
 }
@@ -215,7 +239,7 @@ int fileinfo_command(string* data)
 			else
 			{
 				cout << "Too many file names provided. " + data[i] << endl;
-				return 0; // bad exit code
+				return 1; // bad exit code
 			}
 		}
 	}
@@ -225,7 +249,7 @@ int fileinfo_command(string* data)
 	{
 		file_stream.close();
 		cout<<"File does not exist." << endl;;
-		return 0;
+		return 1;
 	}
 	return fileinfo_command_exec(cmd_switches,filename);
 }
@@ -245,7 +269,7 @@ int osinfo_command(string* data)
 	if(switches[3])
 	{
 		cout << "improper switch usage" << endl;
-		return 0;
+		return 1;
 	}
 	//T
 	if(switches[0])
@@ -262,8 +286,10 @@ int osinfo_command(string* data)
 	//s
 	if(switches[2])
 	{
-		string filenamemaxchar_querry = "echo Max characters in file name: `getconf -a | grep -m1 'NAME_MAX' | awk '{print$2}'`";
-		system(filenamemaxchar_querry.c_str());
+		/*string filenamemaxchar_querry = "echo Max characters in file name: `getconf -a | grep -m1 'NAME_MAX' | awk '{print$2}'`";
+		system(filenamemaxchar_querry.c_str());*/
+
+		cout << "Maximum allowed characters in a file name: "<< FILENAME_MAX << endl;
 	}
 	return 0;
 }
@@ -324,10 +350,6 @@ int main(int argc, char *argv[])
 
 		string* data = split(input, delimeter, result);
 		exit_code = command_switch(data, input);
-		// for(int i = 0; i < input_token_len; i++)
-		// {
-		// 	cout<<data[i]<<endl;
-		// }
 	}
 //exit
 
