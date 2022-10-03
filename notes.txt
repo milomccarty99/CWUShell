@@ -8,6 +8,7 @@ Todo:
 -finish cwushell arguments
 	-why does the system call come before another statement?
 	
+	-system() or exec() functions cannot be used for custom commands.
 
 -start calculator monobehavior app
 
